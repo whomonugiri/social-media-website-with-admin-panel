@@ -1,2 +1,2 @@
 # social-media-website-with-admin-panel
- web project
+Developed By Monu Giri (Dev Ninja)
