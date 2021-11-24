@@ -156,6 +156,19 @@ function checkUser($login_data){
  return $data;
 }
 
+
+//for getting userdata by id
+function getUser($user_id){
+    global $db;
+ $query = "SELECT * FROM users WHERE id=$user_id";
+ $run = mysqli_query($db,$query);
+ return mysqli_fetch_assoc($run);
+
+}
+
+
+
+
 //for creating new user
 function createUser($data){
  global $db;
@@ -172,5 +185,18 @@ function createUser($data){
  return mysqli_query($db,$query);
 }
 
+//function for verify email
+function verifyEmail($email){
+    global $db;
+    $query="UPDATE users SET ac_status=1 WHERE email='$email'";
+    return mysqli_query($db,$query);
+}
 
+//function for verify email
+function resetPassword($email,$password){
+    global $db;
+    $password=md5($password);
+    $query="UPDATE users SET password='$password' WHERE email='$email'";
+    return mysqli_query($db,$query);
+}
 ?>

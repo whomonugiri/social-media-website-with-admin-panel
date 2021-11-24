@@ -27,7 +27,7 @@
 
 
                 </div>
-                <a href="#" class="text-decoration-none">Forgot password ?</a>
+                <a href="?forgotpassword&newfp" class="text-decoration-none">Forgot password ?</a>
             </form>
         </div>
     </div>
