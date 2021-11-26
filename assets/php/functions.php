@@ -50,6 +50,16 @@ function isUsernameRegistered($username){
     return $return_data['row'];
 }
 
+//for checking duplicate username by other
+function isUsernameRegisteredByOther($username){
+    global $db;
+    $user_id=$_SESSION['userdata']['id'];
+    $query="SELECT count(*) as row FROM users WHERE username='$username' && id!=$user_id";
+    $run=mysqli_query($db,$query);
+    $return_data = mysqli_fetch_assoc($run);
+    return $return_data['row'];
+}
+
 //for validating the signup form
 function validateSignupForm($form_data){
 $response=array();
@@ -199,4 +209,88 @@ function resetPassword($email,$password){
     $query="UPDATE users SET password='$password' WHERE email='$email'";
     return mysqli_query($db,$query);
 }
+
+//for validating update form
+function validateUpdateForm($form_data,$image_data){
+    $response=array();
+    $response['status']=true;
+      
+
+        if(!$form_data['username']){
+            $response['msg']="username is not given";
+            $response['status']=false;
+            $response['field']='username';
+        }
+        
+        if(!$form_data['last_name']){
+            $response['msg']="last name is not given";
+            $response['status']=false;
+            $response['field']='last_name';
+        }
+        if(!$form_data['first_name']){
+            $response['msg']="first name is not given";
+            $response['status']=false;
+            $response['field']='first_name';
+        }
+  
+        if(isUsernameRegisteredByOther($form_data['username'])){
+            $response['msg']=$form_data['username']." is already registered";
+            $response['status']=false;
+            $response['field']='username';
+        }
+    
+       if($image_data['name']){
+           $image = basename($image_data['name']);
+           $type = strtolower(pathinfo($image,PATHINFO_EXTENSION));
+           $size = $image_data['size']/1000;
+
+           if($type!='jpg' && $type!='jpeg' && $type!='png'){
+            $response['msg']="only jpg,jpeg,png images are allowed";
+            $response['status']=false;
+            $response['field']='profile_pic';
+        }
+
+        if($size>1000){
+            $response['msg']="upload image less then 1 mb";
+            $response['status']=false;
+            $response['field']='profile_pic';
+        }
+       }
+
+        return $response;
+    
+    }
+    
+
+    //function for updating profile
+
+    function updateProfile($data,$imagedata){
+        global $db;
+        $first_name = mysqli_real_escape_string($db,$data['first_name']);
+        $last_name = mysqli_real_escape_string($db,$data['last_name']);
+        $username = mysqli_real_escape_string($db,$data['username']);
+        $password = mysqli_real_escape_string($db,$data['password']);
+
+if(!$data['password']){
+$password = $_SESSION['userdata']['password'];
+}else{
+    $password = md5($password);
+    $_SESSION['userdata']['password']=$password;
+}
+
+$profile_pic="";
+if($imagedata['name']){
+    $image_name = time().basename($imagedata['name']);
+    $image_dir="../images/profile/$image_name";
+    move_uploaded_file($imagedata['tmp_name'],$image_dir);
+    $profile_pic=", profile_pic='$image_name'";
+}
+       
+      
+    
+        $query = "UPDATE users SET first_name = '$first_name', last_name='$last_name',username='$username',password='$password' $profile_pic WHERE id=".$_SESSION['userdata']['id'];
+return mysqli_query($db,$query);
+
+    }
+
 ?>
