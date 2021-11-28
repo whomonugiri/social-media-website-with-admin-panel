@@ -22,7 +22,8 @@
                     <a class="nav-link text-dark" href="?"><i class="bi bi-house-door-fill"></i></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" href="#"><i class="bi bi-plus-square-fill"></i></a>
+                    
+                    <a class="nav-link text-dark" data-bs-toggle="modal" data-bs-target="#addpost" href="#"><i class="bi bi-plus-square-fill"></i></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-dark" href="#"><i class="bi bi-bell-fill"></i></a>

@@ -8,6 +8,7 @@ if(isset($_GET['newfp'])){
 }
 if(isset($_SESSION['Auth'])){
     $user = getUser($_SESSION['userdata']['id']);
+    $posts = getPost();
 }
 
 $pagecount = count($_GET);
