@@ -7,6 +7,25 @@ function showPage($page,$data=""){
 include("assets/pages/$page.php");
 }
 
+//function for follow the user
+function followUser($user_id){
+    global $db;
+    $current_user=$_SESSION['userdata']['id'];
+    $query="INSERT INTO follow_list(follower_id,user_id) VALUES($current_user,$user_id)";
+    return mysqli_query($db,$query);
+    
+}
+
+function unfollowUser($user_id){
+    global $db;
+    $current_user=$_SESSION['userdata']['id'];
+    $query="DELETE FROM follow_list WHERE follower_id=$current_user && user_id=$user_id";
+    return mysqli_query($db,$query);
+ 
+    
+}
+
+
 //function for show errors
 function showError($field){
 if(isset($_SESSION['error'])){
@@ -176,6 +195,75 @@ function getUser($user_id){
 
 }
 
+
+//for filtering the suggestion list
+function filterFollowSuggestion(){
+$list = getFollowSuggestions();
+$filter_list  = array();
+foreach($list as $user){
+    if(!checkFollowStatus($user['id']) && count($filter_list)<5){
+     $filter_list[]=$user;
+    }
+}
+
+return $filter_list;
+}
+
+//for checking the user is followed by current user or not
+function checkFollowStatus($user_id){
+    global $db;
+    $current_user = $_SESSION['userdata']['id'];
+    $query="SELECT count(*) as row FROM follow_list WHERE follower_id=$current_user && user_id=$user_id";
+    $run = mysqli_query($db,$query);
+    return mysqli_fetch_assoc($run)['row'];
+}
+
+//for getting users for follow suggestions
+function getFollowSuggestions(){
+    global $db;
+
+    $current_user = $_SESSION['userdata']['id'];
+    $query = "SELECT * FROM users WHERE id!=$current_user";
+    $run = mysqli_query($db,$query);
+    return mysqli_fetch_all($run,true);
+}
+
+//get followers count
+function getFollowers($user_id){
+    global $db;
+    $query = "SELECT * FROM follow_list WHERE user_id=$user_id";
+    $run = mysqli_query($db,$query);
+    return mysqli_fetch_all($run,true);
+}
+
+//get followers count
+function getFollowing($user_id){
+    global $db;
+    $query = "SELECT * FROM follow_list WHERE follower_id=$user_id";
+    $run = mysqli_query($db,$query);
+    return mysqli_fetch_all($run,true);
+}
+
+//for getting posts by id
+function getPostById($user_id){
+    global $db;
+ $query = "SELECT * FROM posts WHERE user_id=$user_id ORDER BY id DESC";
+ $run = mysqli_query($db,$query);
+ return mysqli_fetch_all($run,true);
+
+}
+
+//for getting userdata by username
+function getUserByUsername($username){
+    global $db;
+ $query = "SELECT * FROM users WHERE username='$username'";
+ $run = mysqli_query($db,$query);
+ return mysqli_fetch_assoc($run);
+
+
+
+}
+
 //for getting posts
 function getPost(){
     global $db;
@@ -185,6 +273,19 @@ function getPost(){
  return mysqli_fetch_all($run,true);
 
 }
+
+//for getting posts dynamically
+function filterPosts(){
+    $list = getPost();
+    $filter_list  = array();
+    foreach($list as $post){
+        if(checkFollowStatus($post['user_id']) || $post['user_id']==$_SESSION['userdata']['id']){
+         $filter_list[]=$post;
+        }
+    }
+    
+    return $filter_list;
+    }
 
 
 

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 27, 2021 at 08:20 PM
+-- Generation Time: Dec 01, 2021 at 06:35 AM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 8.0.10
 
@@ -20,6 +20,34 @@ SET time_zone = "+00:00";
 --
 -- Database: `pictogram`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `follow_list`
+--
+
+CREATE TABLE `follow_list` (
+  `id` int(11) NOT NULL,
+  `follower_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `follow_list`
+--
+
+INSERT INTO `follow_list` (`id`, `follower_id`, `user_id`) VALUES
+(12, 6, 8),
+(13, 9, 3),
+(14, 9, 8),
+(15, 9, 6),
+(16, 8, 3),
+(17, 8, 4),
+(18, 8, 5),
+(19, 8, 6),
+(22, 8, 7),
+(23, 8, 9);
 
 -- --------------------------------------------------------
 
@@ -44,7 +72,9 @@ INSERT INTO `posts` (`id`, `user_id`, `post_img`, `post_text`, `created_at`) VAL
 (2, 8, '1638040069IMG_20210215_074954_1.jpg', '', '2021-11-27 19:07:49'),
 (3, 6, '1638040508Screenshot (3).png', 'my fisrt web app', '2021-11-27 19:15:08'),
 (4, 8, '1638040695post3.png', 'congratulations my friend ', '2021-11-27 19:18:15'),
-(5, 8, '1638040774post2.jpg', 'say hii to everyone', '2021-11-27 19:19:34');
+(5, 8, '1638040774post2.jpg', 'say hii to everyone', '2021-11-27 19:19:34'),
+(6, 8, '1638239255vlcsnap-2021-10-14-20h23m35s993.png', '', '2021-11-30 02:27:35'),
+(7, 6, '1638243863vlcsnap-2021-10-05-20h25m29s906.png', '', '2021-11-30 03:44:23');
 
 -- --------------------------------------------------------
 
@@ -76,11 +106,18 @@ INSERT INTO `users` (`id`, `first_name`, `last_name`, `gender`, `email`, `userna
 (5, 'Mohans', 'Giri', 1, 'workwithmohan@gmail.com', 'oyeitsmgasdasd', 'c68710d3fe56fc88f7905cb15f06cf5c', 'default_profile.jpg', '2021-11-23 12:00:13', '2021-11-25 08:21:43', 1),
 (6, 'Mohans', 'Giri', 1, 'mailtomonugiri@gmail.com', 'oyeitsmgasd', '970af30e481057c48f87e101b61e6994', 'default_profile.jpg', '2021-11-23 13:24:40', '2021-11-27 19:12:06', 1),
 (7, 'Monu', 'Giri', 1, 'officialmohankumar@gmail.com', 'iamtheking', 'e10adc3949ba59abbe56e057f20f883e', '1637830104profile7.jpg', '2021-11-25 08:45:24', '2021-11-25 08:49:44', 1),
-(8, 'Monu', 'Giri', 1, 'whomonugiri@gmail.com', 'devninja', '970af30e481057c48f87e101b61e6994', '1638035490IMG_20210217_172513 (1).jpg', '2021-11-26 16:53:17', '2021-11-27 17:51:30', 1);
+(8, 'Monu', 'Giri', 1, 'whomonugiri@gmail.com', 'devninja', '970af30e481057c48f87e101b61e6994', '1638035490IMG_20210217_172513 (1).jpg', '2021-11-26 16:53:17', '2021-11-27 17:51:30', 1),
+(9, 'Test', 'Kumar', 1, 'test@gmail.com', 'testman', 'e10adc3949ba59abbe56e057f20f883e', '1638244233bot.png', '2021-11-30 03:45:35', '2021-11-30 03:50:33', 1);
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `follow_list`
+--
+ALTER TABLE `follow_list`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `posts`
@@ -99,16 +136,22 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `follow_list`
+--
+ALTER TABLE `follow_list`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+
+--
 -- AUTO_INCREMENT for table `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

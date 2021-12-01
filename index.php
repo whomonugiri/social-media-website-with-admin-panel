@@ -1,6 +1,6 @@
 <?php
-require_once 'assets/php/functions.php';
 
+require_once 'assets/php/functions.php';
 if(isset($_GET['newfp'])){
     unset($_SESSION['auth_temp']);
     unset($_SESSION['forgot_email']);
@@ -8,7 +8,8 @@ if(isset($_GET['newfp'])){
 }
 if(isset($_SESSION['Auth'])){
     $user = getUser($_SESSION['userdata']['id']);
-    $posts = getPost();
+    $posts = filterPosts();
+    $follow_suggestions = filterFollowSuggestion();
 }
 
 $pagecount = count($_GET);
@@ -30,6 +31,23 @@ if(isset($_SESSION['Auth']) && $user['ac_status']==1 && !$pagecount){
     showPage('header',['page_title'=>'Edit Profile']);
     showPage('navbar');
     showPage('edit_profile');
+}elseif(isset($_SESSION['Auth']) && isset($_GET['u']) && $user['ac_status']==1){
+    $profile = getUserByUsername($_GET['u']);
+    if(!$profile){
+        showPage('header',['page_title'=>'User Not Found']);
+        showPage('navbar');
+        showPage('user_not_found');
+
+    }else{
+     $profile_post = getPostById($profile['id']);  
+     $profile['followers']=getFollowers($profile['id']);
+     $profile['following']=getFollowing($profile['id']);
+        showPage('header',['page_title'=>$profile['first_name'].' '.$profile['last_name']]);
+        showPage('navbar');
+        showPage('profile');
+    }
+ 
+  
 }elseif(isset($_GET['signup'])){
     showPage('header',['page_title'=>'Pictogram - SignUp']);
     showPage('signup');
