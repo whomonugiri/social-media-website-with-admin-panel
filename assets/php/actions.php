@@ -3,6 +3,35 @@ require_once 'functions.php';
 require_once 'send_code.php';
 
 
+if(isset($_GET['test'])){
+ 
+}
+
+if(isset($_GET['block'])){
+    $user_id = $_GET['block'];
+    $user = $_GET['username']; 
+      if(blockUser($user_id)){
+          header("location:../../?u=$user");
+      }else{
+          echo "something went wrong";
+      }
+  
+    
+  }
+
+  if(isset($_GET['deletepost'])){
+    $post_id = $_GET['deletepost'];
+      if(deletePost($post_id)){
+          header("location:{$_SERVER['HTTP_REFERER']}");
+      }else{
+          echo "something went wrong";
+      }
+  
+    
+  }
+
+
+
 //for managaing signup
 if(isset($_GET['signup'])){
 $response=validateSignupForm($_POST);

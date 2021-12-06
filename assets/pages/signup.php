@@ -1,6 +1,6 @@
 
     <div class="login">
-        <div class="col-4 bg-white border rounded p-4 shadow-sm">
+        <div class="col-lg-4 col-md-8 col-sm-12 bg-white border rounded p-4 shadow-sm">
             <form method="post" action="assets/php/actions.php?signup">
                 <div class="d-flex justify-content-center">
 

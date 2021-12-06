@@ -10,10 +10,42 @@ include("assets/pages/$page.php");
 //function for follow the user
 function followUser($user_id){
     global $db;
+    $cu = getUser($_SESSION['userdata']['id']);
     $current_user=$_SESSION['userdata']['id'];
     $query="INSERT INTO follow_list(follower_id,user_id) VALUES($current_user,$user_id)";
+  
+    createNotification($cu['id'],$user_id,"started following you !");
     return mysqli_query($db,$query);
     
+}
+
+
+
+//function for blocking the user
+function blockUser($blocked_user_id){
+    global $db;
+    $cu = getUser($_SESSION['userdata']['id']);
+    $current_user=$_SESSION['userdata']['id'];
+    $query="INSERT INTO block_list(user_id,blocked_user_id) VALUES($current_user,$blocked_user_id)";
+  
+    createNotification($cu['id'],$blocked_user_id,"blocked you");
+    $query2="DELETE FROM follow_list WHERE follower_id=$current_user && user_id=$blocked_user_id";
+    mysqli_query($db,$query2);
+    $query3="DELETE FROM follow_list WHERE follower_id=$blocked_user_id && user_id=$current_user";
+    mysqli_query($db,$query3);
+
+   
+    return mysqli_query($db,$query);
+    
+}
+
+//for unblocking the user
+function unblockUser($user_id){
+    global $db;
+    $current_user=$_SESSION['userdata']['id'];
+    $query="DELETE FROM block_list WHERE user_id=$current_user && blocked_user_id=$user_id";
+    createNotification($current_user,$user_id,"Unblocked you !");
+    return mysqli_query($db,$query);   
 }
 
 //function checkLikeStatus
@@ -30,6 +62,13 @@ function like($post_id){
     global $db;
     $current_user=$_SESSION['userdata']['id'];
     $query="INSERT INTO likes(post_id,user_id) VALUES($post_id,$current_user)";
+   $poster_id = getPosterId($post_id);
+   
+   if($poster_id!=$current_user){
+    createNotification($current_user,$poster_id,"liked your post !",$post_id);
+   }
+   
+
     return mysqli_query($db,$query);
     
 }
@@ -44,18 +83,69 @@ function addComment($post_id,$comment){
 
     $current_user=$_SESSION['userdata']['id'];
     $query="INSERT INTO comments(user_id,post_id,comment) VALUES($current_user,$post_id,'$comment')";
+    $poster_id = getPosterId($post_id);
+
+    if($poster_id!=$current_user){
+        createNotification($current_user,$poster_id,"commented on your post",$post_id);
+    }
+   
+
     return mysqli_query($db,$query);
     
 }
 
 
+//function for creating comments
+function createNotification($from_user_id,$to_user_id,$msg,$post_id=0){
+    global $db;
+    $query="INSERT INTO notifications(from_user_id,to_user_id,message,post_id) VALUES($from_user_id,$to_user_id,'$msg',$post_id)";
+    mysqli_query($db,$query);    
+}
+
+
+
 //function for getting likes count
 function getComments($post_id){
     global $db;
-    $query="SELECT * FROM comments WHERE post_id=$post_id";
+    $query="SELECT * FROM comments WHERE post_id=$post_id ORDER BY id DESC";
     $run = mysqli_query($db,$query);
     return mysqli_fetch_all($run,true);
 }
+
+//get notifications
+
+function getNotifications(){
+  $cu_user_id = $_SESSION['userdata']['id'];
+
+    global $db;
+    $query="SELECT * FROM notifications WHERE to_user_id=$cu_user_id ORDER BY id DESC";
+    $run = mysqli_query($db,$query);
+    return mysqli_fetch_all($run,true);
+}
+
+
+
+function getUnreadNotificationsCount(){
+    $cu_user_id = $_SESSION['userdata']['id'];
+  
+      global $db;
+      $query="SELECT count(*) as row FROM notifications WHERE to_user_id=$cu_user_id && read_status=0 ORDER BY id DESC";
+      $run = mysqli_query($db,$query);
+      return mysqli_fetch_assoc($run)['row'];
+  }
+
+  function show_time($time){
+    return '<time style="font-size:small" class="timeago text-muted text-small" datetime="'.$time.'"></time>';
+  }
+
+  function setNotificationStatusAsRead(){
+       $cu_user_id = $_SESSION['userdata']['id'];
+      global $db;
+      $query="UPDATE notifications SET read_status=1 WHERE to_user_id=$cu_user_id";
+      return mysqli_query($db,$query);
+  }
+
+
 
 //function for getting likes count
 function getLikes($post_id){
@@ -70,12 +160,20 @@ function unlike($post_id){
     global $db;
     $current_user=$_SESSION['userdata']['id'];
     $query="DELETE FROM likes WHERE user_id=$current_user && post_id=$post_id";
+    
+    $poster_id = getPosterId($post_id);
+    if($poster_id!=$current_user){
+        createNotification($current_user,$poster_id,"unliked your post !",$post_id);
+    }
+  
     return mysqli_query($db,$query);
 }
 function unfollowUser($user_id){
     global $db;
     $current_user=$_SESSION['userdata']['id'];
     $query="DELETE FROM follow_list WHERE follower_id=$current_user && user_id=$user_id";
+
+    createNotification($current_user,$user_id,"Unfollowed you !");
     return mysqli_query($db,$query);
  
     
@@ -257,7 +355,7 @@ function filterFollowSuggestion(){
 $list = getFollowSuggestions();
 $filter_list  = array();
 foreach($list as $user){
-    if(!checkFollowStatus($user['id']) && count($filter_list)<5){
+    if(!checkFollowStatus($user['id']) && !checkBS($user['id']) && count($filter_list)<5){
      $filter_list[]=$user;
     }
 }
@@ -273,6 +371,25 @@ function checkFollowStatus($user_id){
     $run = mysqli_query($db,$query);
     return mysqli_fetch_assoc($run)['row'];
 }
+
+//for checking the user is followed by current user or not
+function checkBlockStatus($current_user,$user_id){
+    global $db;
+    
+    $query="SELECT count(*) as row FROM block_list WHERE user_id=$current_user && blocked_user_id=$user_id";
+    $run = mysqli_query($db,$query);
+    return mysqli_fetch_assoc($run)['row'];
+}
+
+
+function checkBS($user_id){
+    global $db;
+    $current_user = $_SESSION['userdata']['id'];
+    $query="SELECT count(*) as row FROM block_list WHERE (user_id=$current_user && blocked_user_id=$user_id) || (user_id=$user_id && blocked_user_id=$current_user)";
+    $run = mysqli_query($db,$query);
+    return mysqli_fetch_assoc($run)['row'];
+}
+//
 
 //for getting users for follow suggestions
 function getFollowSuggestions(){
@@ -309,6 +426,27 @@ function getPostById($user_id){
 
 }
 
+//for getting post
+function getPosterId($post_id){
+    global $db;
+ $query = "SELECT user_id FROM posts WHERE id=$post_id";
+ $run = mysqli_query($db,$query);
+ return mysqli_fetch_assoc($run)['user_id'];
+
+}
+
+//for searching the users
+function searchUser($keyword){
+    global $db;
+ $query = "SELECT * FROM users WHERE username LIKE '%".$keyword."%' || (first_name LIKE '%".$keyword."%' || last_name LIKE '%".$keyword."%') LIMIT 5";
+ $run = mysqli_query($db,$query);
+ return mysqli_fetch_all($run,true);
+
+}
+
+
+
+
 //for getting userdata by username
 function getUserByUsername($username){
     global $db;
@@ -323,11 +461,27 @@ function getUserByUsername($username){
 //for getting posts
 function getPost(){
     global $db;
- $query = "SELECT posts.id,posts.user_id,posts.post_img,posts.post_text,posts.created_at,users.first_name,users.last_name,users.username,users.profile_pic FROM posts JOIN users ON users.id=posts.user_id ORDER BY id DESC";
+ $query = "SELECT users.id as uid,posts.id,posts.user_id,posts.post_img,posts.post_text,posts.created_at,users.first_name,users.last_name,users.username,users.profile_pic FROM posts JOIN users ON users.id=posts.user_id ORDER BY id DESC";
 
  $run = mysqli_query($db,$query);
  return mysqli_fetch_all($run,true);
 
+}
+
+
+function deletePost($post_id){
+    global $db;
+$user_id=$_SESSION['userdata']['id'];
+    $dellike = "DELETE FROM likes WHERE post_id=$post_id && user_id=$user_id";
+    mysqli_query($db,$dellike);
+    $delcom = "DELETE FROM comments WHERE post_id=$post_id && user_id=$user_id";
+    mysqli_query($db,$delcom);
+    $not = "UPDATE notifications SET read_status=2 WHERE post_id=$post_id && to_user_id=$user_id";
+mysqli_query($db,$not);
+
+
+    $query = "DELETE FROM posts WHERE id=$post_id";
+    return mysqli_query($db,$query);
 }
 
 //for getting posts dynamically

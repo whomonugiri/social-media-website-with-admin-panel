@@ -2,7 +2,7 @@
 global $user;
 ?>
     <div class="login">
-        <div class="col-4 bg-white border rounded p-4 shadow-sm">
+        <div class="col-md-4 col-sm-11 bg-white border rounded p-4 shadow-sm">
             <form method="post" action="assets/php/actions.php?verify_email">
                 <div class="d-flex justify-content-center">
 

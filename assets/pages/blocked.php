@@ -5,7 +5,7 @@ global $user;
 
 <body>
     <div class="login">
-        <div class="col-4 bg-white border rounded p-4 shadow-sm">
+        <div class="col-md-4 col-sm-12 bg-white border rounded p-4 shadow-sm">
             <form>
                 <div class="d-flex justify-content-center">
 

@@ -1,6 +1,6 @@
 
     <div class="login">
-        <div class="col-4 bg-white border rounded p-4 shadow-sm">
+        <div class="col-lg-4 col-md-8 col-sm-12 bg-white border rounded p-4 shadow-sm">
             <?php
 if(isset($_SESSION['forgot_code']) && !isset($_SESSION['auth_temp'])){
     $action = 'verifycode';

@@ -1,5 +1,5 @@
 <?php global $user;?>
-    <div class="container col-9 rounded-0 d-flex justify-content-between">
+    <div class="container col-md-9 col-sm-12 rounded-0 d-flex justify-content-between">
         <div class="col-12 bg-white border rounded p-4 mt-4 shadow-sm">
             <form method="post" action="assets/php/actions.php?updateprofile" enctype="multipart/form-data">
                 <div class="d-flex justify-content-center">
@@ -15,8 +15,8 @@ if(isset($_GET['success'])){
 <?php
 }
                 ?>
-                <div class="form-floating mt-1 col-6">
-                    <img src="assets/images/profile/<?=$user['profile_pic']?>" class="img-thumbnail my-3" style="height:150px;" alt="...">
+                <div class="form-floating mt-1 col-md-6 col-sm-12">
+                    <img src="assets/images/profile/<?=$user['profile_pic']?>" class="img-thumbnail my-3" style="height:150px;width:150px" alt="...">
                     <div class="mb-3">
                         <label for="formFile" class="form-label">Change Profile Picture</label>
                         <input class="form-control" type="file" name="profile_pic" id="formFile">

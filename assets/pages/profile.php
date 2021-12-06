@@ -3,25 +3,25 @@ global $profile;
 global $profile_post;
 global $user;
 ?>
-    <div class="container col-9 rounded-0">
-        <div class="col-12 rounded p-4 mt-4 d-flex gap-5">
-            <div class="col-4 d-flex justify-content-end align-items-start"><img src="assets/images/profile/<?=$profile['profile_pic']?>"
-                    class="img-thumbnail rounded-circle my-3" style="height:170px;" alt="...">
+    <div class="container col-md-9 col-sm-11 rounded-0">
+        <div class="col-12 rounded p-4 mt-4 d-md-flex gap-5">
+            <div class="col-md-4 col-sm-12 d-flex justify-content-center mx-auto align-items-start"><div class="px-md-5"></div><img src="assets/images/profile/<?=$profile['profile_pic']?>"
+                    class="img-thumbnail rounded-circle mb-3" style="width:170px;height:170px" alt="...">
             </div>
-            <div class="col-8">
+            <div class="col-md-8 col-sm-11">
                 <div class="d-flex flex-column">
                     <div class="d-flex gap-5 align-items-center">
                         <span style="font-size: xx-large;"><?=$profile['first_name']?> <?=$profile['last_name']?></span>
                         
                         <?php
-if($user['id']!=$profile['id']){
+if($user['id']!=$profile['id'] && !checkBS($profile['id'])){
     ?>
   <div class="dropdown">
                             <span class="" style="font-size:xx-large" type="button" id="dropdownMenuButton1"
                                 data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-three-dots"></i> </span>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                 <li><a class="dropdown-item" href="#"><i class="bi bi-chat-fill"></i> Message</a></li>
-                                <li><a class="dropdown-item" href="#"><i class="bi bi-x-circle-fill"></i> Block</a></li>
+                                <li><a class="dropdown-item " href="assets/php/actions.php?block=<?=$profile['id']?>&username=<?=$profile['username']?>"><i class="bi bi-x-circle-fill"></i> Block</a></li>
                             </ul>
                         </div>
     <?php
@@ -32,14 +32,22 @@ if($user['id']!=$profile['id']){
 
                     </div>
                     <span style="font-size: larger;" class="text-secondary">@<?=$profile['username']?></span>
-                    <div class="d-flex gap-2 align-items-center my-3">
+                    <?php
+if(!checkBS($profile['id'])){
+    ?>
+ <div class="d-flex gap-2 align-items-center my-3">
 
-                        <a class="btn btn-sm btn-primary"><i class="bi bi-file-post-fill"></i> <?=count($profile_post)?> Posts</a>
-                        <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#follower_list"><i class="bi bi-people-fill"></i> <?=count($profile['followers'])?> Followers</a>
-                        <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#following_list"><i class="bi bi-person-fill"></i> <?=count($profile['following'])?> Following</a>
+<a class="btn btn-sm btn-primary"><i class="bi bi-file-post-fill"></i> <?=count($profile_post)?> Posts</a>
+<a class="btn btn-sm btn-primary <?=count($profile['followers'])<1?'disabled':''?>" data-bs-toggle="modal" data-bs-target="#follower_list"><i class="bi bi-people-fill"></i> <?=count($profile['followers'])?> Followers</a>
+<a class="btn btn-sm btn-primary <?=count($profile['following'])<1?'disabled':''?>" data-bs-toggle="modal" data-bs-target="#following_list"><i class="bi bi-person-fill"></i> <?=count($profile['following'])?> Following</a>
 
 
-                    </div>
+</div>
+    <?php
+
+}
+                    ?>
+                   
 <?php
 
 
@@ -47,7 +55,16 @@ if($user['id']!=$profile['id']){
 ?>
  <div class="d-flex gap-2 align-items-center my-1">
 <?php
-if(checkFollowStatus($profile['id'])){
+if(checkBlockStatus($user['id'],$profile['id'])){
+?> 
+<button class="btn btn-sm btn-danger unblockbtn" data-user-id='<?=$profile['id']?>' >Unblock</button>
+
+<?php
+}else if(checkBlockStatus($profile['id'],$user['id'])){ ?>
+    <div class="alert alert-danger" role="alert">
+    <i class="bi bi-x-octagon-fill"></i> @<?=$profile['username']?> blocked you !
+</div>
+   <?php }else if(checkFollowStatus($profile['id'])){
    ?>
 <button class="btn btn-sm btn-danger unfollowbtn" data-user-id='<?=$profile['id']?>' >Unfollow</button>
    
@@ -74,7 +91,17 @@ if(checkFollowStatus($profile['id'])){
         </div>
         <h3 class="border-bottom">Posts</h3>
         <?php
-if(count($profile_post)<1){
+
+if(checkBS($profile['id'])){
+    $profile_post = array();
+
+   ?>
+ <div class="alert alert-secondary text-center" role="alert">
+    <i class="bi bi-x-octagon-fill"></i> You are not allowed to see posts !
+</div>
+   <?php
+    
+}else if(count($profile_post)<1){
     echo "<p class='p-2 bg-white border rounded text-center my-3'>You don't have any post</p>";
 }
         ?>
@@ -82,6 +109,8 @@ if(count($profile_post)<1){
             <?php
                
 foreach($profile_post as $post){
+    $likes = getLikes($post['id']);
+
     ?>
             <img src="assets/images/posts/<?=$post['post_img']?>" data-bs-toggle="modal" data-bs-target="#postview<?=$post['id']?>" width="300px" class="rounded" />
        
@@ -89,23 +118,47 @@ foreach($profile_post as $post){
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
 
-                <div class="modal-body d-flex p-0">
-                    <div class="col-8">
-                        <img src="assets/images/posts/<?=$post['post_img']?>" class="w-100 rounded-start">
+                <div class="modal-body d-md-flex p-0">
+                    <div class="col-md-8 col-sm-12">
+                        <img src="assets/images/posts/<?=$post['post_img']?>" style="max-height:90vh" class="w-100 rounded-start">
                     </div>
 
 
 
-                    <div class="col-4 d-flex flex-column">
-                        <div class="d-flex align-items-center p-2 border-bottom">
-                            <div><img src="assets/images/profile/<?=$profile['profile_pic']?>" alt="" height="50" class="rounded-circle border">
+                    <div class="col-md-4 col-sm-12 d-flex flex-column">
+                        <div class="d-flex align-items-center p-2 <?=$post['post_text']?'':'border-bottom'?>">
+                            <div><img src="assets/images/profile/<?=$profile['profile_pic']?>" alt="" height="50" width="50" class="rounded-circle border">
                             </div>
                             <div>&nbsp;&nbsp;&nbsp;</div>
-                            <div class="d-flex flex-column justify-content-start align-items-center">
+                            <div class="d-flex flex-column justify-content-start">
                                 <h6 style="margin: 0px;"><?=$profile['first_name']?> <?=$profile['last_name']?></h6>
                                 <p style="margin:0px;" class="text-muted">@<?=$profile['username']?></p>
                             </div>
+
+                            <div class="d-flex flex-column align-items-end flex-fill">
+                <div class="" ></div>
+                <div class="dropdown">
+  <span class="<?=count($likes)<1?'disabled':''?>" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+  <?=count($likes)?> likes
+</span>
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+  <?php
+  foreach($likes as $like){
+      $lu = getUser($like['user_id']);
+      ?>
+  <li><a class="dropdown-item" href="?u=<?=$lu['username']?>"><?=$lu['first_name'].' '.$lu['last_name']?> (@<?=$lu['username']?>)</a></li>
+
+      <?php
+  }
+  ?> 
+    
+  </ul>
+</div>
+                <div style="font-size:small" class="text-muted">Posted <?=show_time($post['created_at'])?> </div> 
+                 
+</div>
                         </div>
+<div class="border-bottom p-2 <?=$post['post_text']?'':'d-none'?>"><?=$post['post_text']?> </div>
 
 
                         <div class="flex-fill align-self-stretch overflow-auto" id="comment-section<?=$post['id']?>" style="height: 100px;">
@@ -121,12 +174,12 @@ foreach($comments as $comment){
     $cuser = getUser($comment['user_id']);
     ?>
 <div class="d-flex align-items-center p-2">
-                                <div><img src="assets/images/profile/<?=$cuser['profile_pic']?>" alt="" height="40" class="rounded-circle border">
+                                <div><img src="assets/images/profile/<?=$cuser['profile_pic']?>" alt="" height="40" width="40" class="rounded-circle border">
                                 </div>
                                 <div>&nbsp;&nbsp;&nbsp;</div>
                                 <div class="d-flex flex-column justify-content-start align-items-start">
-                                    <h6 style="margin: 0px;"><a href="?u=<?=$cuser['username']?>" class="text-decoration-none text-dark">@<?=$cuser['username']?></a></h6>
-                                    <p style="margin:0px;" class="text-muted"><?=$comment['comment']?></p>
+                                    <h6 style="margin: 0px;"><a href="?u=<?=$cuser['username']?>" class="text-decoration-none text-muted">@<?=$cuser['username']?></a> - <?=$comment['comment']?></h6>
+                                    <p style="margin:0px;" class="text-muted"><?=show_time($comment['created_at'])?></p>
                                 </div>
                             </div>
 
@@ -140,12 +193,25 @@ foreach($comments as $comment){
                            
 
                         </div>
-                        <div class="input-group p-2 border-top">
+                        <?php
+                        if(checkFollowStatus($profile['id']) || $profile['id']==$user['id']){
+                            ?>
+  <div class="input-group p-2 border-top">
                             <input type="text" class="form-control rounded-0 border-0 comment-input" placeholder="say something.."
                                 aria-label="Recipient's username" aria-describedby="button-addon2">
                             <button class="btn btn-outline-primary rounded-0 border-0 add-comment" data-cs="comment-section<?=$post['id']?>" data-post-id="<?=$post['id']?>" type="button"
                                 id="button-addon2">Post</button>
                         </div>
+                            <?php
+                        }else{
+                            ?>
+<div class="text-center p-2">
+if you want to comment follow this user</div>
+                        
+                            <?php
+                        }
+                        ?>
+                      
                     </div>
 
 
@@ -197,7 +263,7 @@ foreach($profile['followers'] as $f){
     ?>
 <div class="d-flex justify-content-between">
                     <div class="d-flex align-items-center p-2">
-                        <div><img src="assets/images/profile/<?=$fuser['profile_pic']?>" alt="" height="40" class="rounded-circle border">
+                        <div><img src="assets/images/profile/<?=$fuser['profile_pic']?>" alt="" height="40" width="40" class="rounded-circle border">
                         </div>
                         <div>&nbsp;&nbsp;</div>
                         <div class="d-flex flex-column justify-content-center">
@@ -245,7 +311,7 @@ foreach($profile['following'] as $f){
     ?>
 <div class="d-flex justify-content-between">
                     <div class="d-flex align-items-center p-2">
-                        <div><img src="assets/images/profile/<?=$fuser['profile_pic']?>" alt="" height="40" class="rounded-circle border">
+                        <div><img src="assets/images/profile/<?=$fuser['profile_pic']?>" alt="" height="40" width="40" class="rounded-circle border">
                         </div>
                         <div>&nbsp;&nbsp;</div>
                         <div class="d-flex flex-column justify-content-center">
