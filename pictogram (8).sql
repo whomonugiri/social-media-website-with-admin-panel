@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 03, 2021 at 09:20 AM
+-- Generation Time: Dec 06, 2021 at 12:44 PM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 8.0.10
 
@@ -24,6 +24,25 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `block_list`
+--
+
+CREATE TABLE `block_list` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `blocked_user_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `block_list`
+--
+
+INSERT INTO `block_list` (`id`, `user_id`, `blocked_user_id`) VALUES
+(5, 8, 9);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `comments`
 --
 
@@ -40,8 +59,6 @@ CREATE TABLE `comments` (
 --
 
 INSERT INTO `comments` (`id`, `post_id`, `user_id`, `comment`, `created_at`) VALUES
-(1, 8, 8, 'test', '2021-12-02 17:33:01'),
-(2, 8, 8, 'thi is another comment', '2021-12-02 17:34:02'),
 (3, 5, 8, 'this is awesome guys', '2021-12-02 17:44:26'),
 (4, 5, 8, 'dfg', '2021-12-02 17:46:43'),
 (5, 5, 8, 'ok just testing', '2021-12-02 17:51:50'),
@@ -63,7 +80,23 @@ INSERT INTO `comments` (`id`, `post_id`, `user_id`, `comment`, `created_at`) VAL
 (21, 1, 10, 'super cool', '2021-12-02 18:22:24'),
 (22, 5, 10, 'super nice', '2021-12-02 18:23:18'),
 (23, 9, 10, 'super cool', '2021-12-02 18:24:44'),
-(24, 4, 10, 'thanks bro', '2021-12-02 18:26:02');
+(24, 4, 10, 'thanks bro', '2021-12-02 18:26:02'),
+(25, 2, 8, 'looking awesome bro', '2021-12-04 10:55:57'),
+(27, 8, 10, 'this is my fav image', '2021-12-04 11:18:13'),
+(28, 4, 10, 'congrats guys', '2021-12-04 11:37:42'),
+(29, 9, 8, 'nice pic brother ', '2021-12-04 12:09:12'),
+(30, 9, 10, 'thanks brother', '2021-12-04 12:09:36'),
+(32, 10, 8, 'super cool', '2021-12-04 12:24:06'),
+(34, 5, 8, 'aweomse', '2021-12-04 12:45:09'),
+(38, 10, 8, 'ok bye then', '2021-12-04 16:40:00'),
+(39, 10, 8, 'cool', '2021-12-04 16:44:10'),
+(40, 9, 8, 'ok nice', '2021-12-04 16:50:21'),
+(41, 10, 8, 'good', '2021-12-04 16:51:22'),
+(42, 1, 8, 'Nice pic', '2021-12-05 05:44:25'),
+(43, 9, 11, 'Hii bro', '2021-12-05 06:52:16'),
+(44, 12, 10, 'awesome pic bro', '2021-12-06 08:17:41'),
+(45, 5, 10, 'nice girls', '2021-12-06 08:19:08'),
+(46, 5, 8, 'Thanks', '2021-12-06 08:25:30');
 
 -- --------------------------------------------------------
 
@@ -82,17 +115,21 @@ CREATE TABLE `follow_list` (
 --
 
 INSERT INTO `follow_list` (`id`, `follower_id`, `user_id`) VALUES
-(12, 6, 8),
 (13, 9, 3),
-(14, 9, 8),
 (15, 9, 6),
-(22, 8, 7),
-(36, 8, 9),
-(37, 8, 6),
 (38, 10, 3),
 (42, 10, 7),
 (43, 10, 9),
-(44, 10, 8);
+(57, 8, 4),
+(58, 8, 5),
+(66, 10, 11),
+(68, 11, 10),
+(69, 11, 7),
+(70, 11, 9),
+(71, 11, 3),
+(72, 11, 8),
+(74, 10, 8),
+(75, 8, 10);
 
 -- --------------------------------------------------------
 
@@ -114,16 +151,50 @@ INSERT INTO `likes` (`id`, `post_id`, `user_id`) VALUES
 (17, 3, 8),
 (30, 7, 9),
 (31, 5, 9),
-(41, 4, 8),
-(43, 5, 8),
-(44, 8, 8),
 (45, 7, 8),
-(46, 6, 8),
-(47, 2, 8),
 (49, 3, 10),
 (56, 9, 10),
 (57, 5, 10),
-(58, 4, 10);
+(67, 1, 8),
+(69, 6, 10),
+(74, 10, 8),
+(79, 9, 11),
+(86, 6, 8),
+(88, 12, 10),
+(89, 5, 8),
+(90, 2, 8);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `notifications`
+--
+
+CREATE TABLE `notifications` (
+  `id` int(11) NOT NULL,
+  `to_user_id` int(11) NOT NULL,
+  `message` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `from_user_id` int(11) NOT NULL,
+  `read_status` int(11) NOT NULL DEFAULT 0,
+  `post_id` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `notifications`
+--
+
+INSERT INTO `notifications` (`id`, `to_user_id`, `message`, `created_at`, `from_user_id`, `read_status`, `post_id`) VALUES
+(82, 10, 'Unblocked you !', '2021-12-06 08:16:11', 8, 1, '0'),
+(83, 8, 'started following you !', '2021-12-06 08:16:59', 10, 1, '0'),
+(84, 8, 'liked your post !', '2021-12-06 08:17:33', 10, 2, '12'),
+(85, 8, 'commented on your post', '2021-12-06 08:17:41', 10, 2, '12'),
+(86, 8, 'commented on your post', '2021-12-06 08:19:07', 10, 1, '5'),
+(87, 10, 'blocked you', '2021-12-06 08:20:42', 8, 1, '0'),
+(88, 10, 'Unblocked you !', '2021-12-06 08:21:09', 8, 1, '0'),
+(89, 8, 'started following you !', '2021-12-06 08:21:34', 10, 1, '0'),
+(90, 10, 'started following you !', '2021-12-06 08:22:17', 8, 1, '0'),
+(91, 3, 'Unfollowed you !', '2021-12-06 08:26:01', 8, 0, '0');
 
 -- --------------------------------------------------------
 
@@ -147,11 +218,9 @@ INSERT INTO `posts` (`id`, `user_id`, `post_img`, `post_text`, `created_at`) VAL
 (1, 8, '1638039262wolf-g17d3951f3_1920.jpg', 'this is my first image post', '2021-11-27 18:54:22'),
 (2, 8, '1638040069IMG_20210215_074954_1.jpg', '', '2021-11-27 19:07:49'),
 (3, 6, '1638040508Screenshot (3).png', 'my fisrt web app', '2021-11-27 19:15:08'),
-(4, 8, '1638040695post3.png', 'congratulations my friend ', '2021-11-27 19:18:15'),
 (5, 8, '1638040774post2.jpg', 'say hii to everyone', '2021-11-27 19:19:34'),
 (6, 8, '1638239255vlcsnap-2021-10-14-20h23m35s993.png', '', '2021-11-30 02:27:35'),
 (7, 6, '1638243863vlcsnap-2021-10-05-20h25m29s906.png', '', '2021-11-30 03:44:23'),
-(8, 8, '1638451081ghantaa_261152324_961019631159870_4113297414053121887_n.jpg', '', '2021-12-02 13:18:01'),
 (9, 10, '1638469199post4.jpg', '', '2021-12-02 18:19:59');
 
 -- --------------------------------------------------------
@@ -186,11 +255,18 @@ INSERT INTO `users` (`id`, `first_name`, `last_name`, `gender`, `email`, `userna
 (7, 'Monu', 'Giri', 1, 'officialmohankumar@gmail.com', 'iamtheking', 'e10adc3949ba59abbe56e057f20f883e', '1637830104profile7.jpg', '2021-11-25 08:45:24', '2021-11-25 08:49:44', 1),
 (8, 'Monu', 'Giri', 1, 'whomonugiri@gmail.com', 'devninja', '970af30e481057c48f87e101b61e6994', '1638035490IMG_20210217_172513 (1).jpg', '2021-11-26 16:53:17', '2021-11-27 17:51:30', 1),
 (9, 'Test', 'Kumar', 1, 'test@gmail.com', 'testman', 'e10adc3949ba59abbe56e057f20f883e', '1638244233bot.png', '2021-11-30 03:45:35', '2021-11-30 03:50:33', 1),
-(10, 'Amit', 'Sharma', 1, 'amith@gmail.com', 'amithero', 'e10adc3949ba59abbe56e057f20f883e', '1638468543profile8.jpg', '2021-12-02 18:06:37', '2021-12-02 18:09:03', 1);
+(10, 'Amit', 'Sharma', 1, 'amith@gmail.com', 'amithero', 'e10adc3949ba59abbe56e057f20f883e', '1638468543profile8.jpg', '2021-12-02 18:06:37', '2021-12-02 18:09:03', 1),
+(11, 'Pankaj', 'Mishra', 1, 'officialmohankumar12@gmail.com', 'pankaj1427', 'e10adc3949ba59abbe56e057f20f883e', '1638686483IMG-20211130-WA0023.jpg', '2021-12-05 06:36:14', '2021-12-05 07:16:41', 1);
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `block_list`
+--
+ALTER TABLE `block_list`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `comments`
@@ -211,6 +287,12 @@ ALTER TABLE `likes`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `notifications`
+--
+ALTER TABLE `notifications`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `posts`
 --
 ALTER TABLE `posts`
@@ -227,34 +309,46 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `block_list`
+--
+ALTER TABLE `block_list`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
 -- AUTO_INCREMENT for table `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT for table `follow_list`
 --
 ALTER TABLE `follow_list`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
 
 --
 -- AUTO_INCREMENT for table `likes`
 --
 ALTER TABLE `likes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=91;
+
+--
+-- AUTO_INCREMENT for table `notifications`
+--
+ALTER TABLE `notifications`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=92;
 
 --
 -- AUTO_INCREMENT for table `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
