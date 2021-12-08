@@ -289,3 +289,98 @@ $(".unblockbtn").click(function () {
     });
 });
 
+var chatting_user_id = 0;
+
+$(".chatlist_item").click();
+
+function popchat(user_id) {
+    $("#user_chat").html(`<div class="spinner-border text-center" role="status">
+
+  </div>`);
+
+    $("#chatter_username").text('loading..');
+    $("#chatter_name").text('');
+    $("#chatter_pic").attr('src', 'assets/images/profile/default_profile.jpg');
+    chatting_user_id = user_id;
+    $("#sendmsg").attr('data-user-id', user_id);
+}
+
+
+$("#sendmsg").click(function () {
+    var user_id = chatting_user_id;
+    var msg = $("#msginput").val();
+    console.log(user_id);
+    if (!msg) return;
+
+    $("#sendmsg").attr("disabled", true);
+    $("#msginput").attr("disabled", true);
+    $.ajax({
+        url: 'assets/php/ajax.php?sendmessage',
+        method: 'post',
+        dataType: 'json',
+        data: { user_id: user_id, msg: msg },
+        success: function (response) {
+            if (response.status) {
+                $("#sendmsg").attr("disabled", false);
+                $("#msginput").attr("disabled", false);
+                $("#msginput").val('');
+            } else {
+                alert('someting went wrong, try again after some time');
+            }
+
+
+
+        }
+    });
+
+});
+
+function synmsg() {
+
+    $.ajax({
+        url: 'assets/php/ajax.php?getmessages',
+        method: 'post',
+        dataType: 'json',
+        data: { chatter_id: chatting_user_id },
+        success: function (response) {
+            console.log(response);
+            $("#chatlist").html(response.chatlist);
+            if (response.newmsgcount == 0) {
+                $("#msgcounter").hide();
+            } else {
+                $("#msgcounter").show();
+                $("#msgcounter").html("<small>" + response.newmsgcount + "</small>");
+
+
+            }
+            if (response.blocked) {
+                $("#msgsender").hide();
+                $("#blerror").show();
+
+            } else {
+                $("#msgsender").show();
+                $("#blerror").hide();
+            }
+
+            if (chatting_user_id != 0) {
+                $("#user_chat").html(response.chat.msgs);
+
+                $("#chatter_username").text(response.chat.userdata.username);
+                $("#cplink").attr('href', '?u=' + response.chat.userdata.username);
+
+                $("#chatter_name").text(response.chat.userdata.first_name + ' ' + response.chat.userdata.last_name);
+                $("#chatter_pic").attr('src', 'assets/images/profile/' + response.chat.userdata.profile_pic);
+            }
+
+
+
+        }
+    });
+}
+
+synmsg();
+
+setInterval(() => {
+    synmsg();
+
+}, 1000);

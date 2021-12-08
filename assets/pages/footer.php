@@ -25,6 +25,7 @@
         </div>
   </div>
 </div>
+
 <div class="offcanvas offcanvas-start" tabindex="-1" id="notification_sidebar" aria-labelledby="offcanvasExampleLabel">
   <div class="offcanvas-header">
     <h5 class="offcanvas-title" id="offcanvasExampleLabel">Notifications</h5>
@@ -44,7 +45,7 @@ foreach($notifications as $not){
     ?>
 <div class="d-flex justify-content-between border-bottom">
                     <div class="d-flex align-items-center p-2">
-                        <div><img src="assets/images/profile/<?=$fuser['profile_pic']?>" alt="" height="40" class="rounded-circle border">
+                        <div><img src="assets/images/profile/<?=$fuser['profile_pic']?>" alt="" height="40" width="40" class="rounded-circle border">
                         </div>
                         <div>&nbsp;&nbsp;</div>
                         <div class="d-flex flex-column justify-content-center" <?=$post?>>
@@ -76,6 +77,56 @@ if($not['read_status']==0){
     
   </div>
 </div>
+
+
+
+
+
+
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="message_sidebar" aria-labelledby="offcanvasExampleLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasExampleLabel">Messages</h5>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body" id="chatlist">
+
+   
+
+    
+  </div>
+</div>
+
+<div class="modal fade" id="chatbox" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <a href="" id="cplink" class="text-decoration-none text-dark"><h5 class="modal-title" id="exampleModalLabel"><img src="assets/images/profile/default_profile.jpg" id="chatter_pic" height="40" width="40" class="m-1 rounded-circle border"><span id="chatter_name"></span>(@<span id="chatter_username">loading..</span>)</h5></a>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body d-flex flex-column-reverse gap-2" id="user_chat">
+      loading..
+      </div>
+      <div class="modal-footer">
+         
+          <p class="p-2 text-danger mx-auto" id="blerror" style="display:none"> 
+          <i class="bi bi-x-octagon-fill"></i> you are not allowed to send msg to this user anymore
+
+</div>
+      <div class="input-group p-2 " id="msgsender">
+                            <input type="text" class="form-control rounded-0 border-0" id="msginput" placeholder="say something.."
+                                aria-label="Recipient's username" aria-describedby="button-addon2">
+                            <button class="btn btn-outline-primary rounded-0 border-0" id="sendmsg" data-user-id="0" type="button"
+                                >Send</button>
+                        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
 <?php } ?>
 
     <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>

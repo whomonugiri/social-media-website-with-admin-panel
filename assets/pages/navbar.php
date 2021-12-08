@@ -55,7 +55,9 @@ if(getUnreadNotificationsCount()>0){
 
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" href="#"><i class="bi bi-chat-right-dots-fill"></i></a>
+                    <a class="nav-link text-dark" data-bs-toggle="offcanvas" href="#message_sidebar" href="#"><i class="bi bi-chat-right-dots-fill"></i>  <span class="un-count position-absolute start-10 translate-middle badge p-1 rounded-pill bg-danger" id="msgcounter">
+  
+  </span></a>
                 </li>
                 <li class="nav-item dropdown dropstart">
                     <a class="nav-link" href="#" id="navbarDropdown" role="button"

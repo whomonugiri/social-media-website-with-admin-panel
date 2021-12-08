@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 06, 2021 at 12:44 PM
+-- Generation Time: Dec 08, 2021 at 12:18 PM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 8.0.10
 
@@ -96,7 +96,8 @@ INSERT INTO `comments` (`id`, `post_id`, `user_id`, `comment`, `created_at`) VAL
 (43, 9, 11, 'Hii bro', '2021-12-05 06:52:16'),
 (44, 12, 10, 'awesome pic bro', '2021-12-06 08:17:41'),
 (45, 5, 10, 'nice girls', '2021-12-06 08:19:08'),
-(46, 5, 8, 'Thanks', '2021-12-06 08:25:30');
+(46, 5, 8, 'Thanks', '2021-12-06 08:25:30'),
+(47, 6, 11, 'Awesosm', '2021-12-07 10:24:33');
 
 -- --------------------------------------------------------
 
@@ -126,10 +127,7 @@ INSERT INTO `follow_list` (`id`, `follower_id`, `user_id`) VALUES
 (68, 11, 10),
 (69, 11, 7),
 (70, 11, 9),
-(71, 11, 3),
-(72, 11, 8),
-(74, 10, 8),
-(75, 8, 10);
+(71, 11, 3);
 
 -- --------------------------------------------------------
 
@@ -159,10 +157,44 @@ INSERT INTO `likes` (`id`, `post_id`, `user_id`) VALUES
 (69, 6, 10),
 (74, 10, 8),
 (79, 9, 11),
-(86, 6, 8),
 (88, 12, 10),
 (89, 5, 8),
 (90, 2, 8);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `messages`
+--
+
+CREATE TABLE `messages` (
+  `id` int(11) NOT NULL,
+  `from_user_id` int(11) NOT NULL,
+  `to_user_id` int(11) NOT NULL,
+  `msg` text NOT NULL,
+  `read_status` int(11) NOT NULL DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `messages`
+--
+
+INSERT INTO `messages` (`id`, `from_user_id`, `to_user_id`, `msg`, `read_status`, `created_at`) VALUES
+(27, 8, 10, 'hii amit', 1, '2021-12-07 10:47:18'),
+(28, 8, 11, 'hii pankaj', 1, '2021-12-07 10:47:44'),
+(29, 11, 8, 'Hii monu bro', 1, '2021-12-07 10:48:03'),
+(30, 8, 11, 'ok get it', 1, '2021-12-07 10:48:15'),
+(31, 11, 8, 'Thanks for unblocking me', 1, '2021-12-07 11:05:27'),
+(32, 11, 8, 'No I am going to block you', 1, '2021-12-07 11:05:52'),
+(33, 10, 8, 'Hii bro', 1, '2021-12-07 11:10:12'),
+(34, 8, 10, 'hii man', 1, '2021-12-07 11:10:26'),
+(35, 10, 8, 'So what are you doing', 1, '2021-12-07 11:10:39'),
+(36, 8, 10, 'nothing big you tell', 1, '2021-12-07 11:11:00'),
+(37, 10, 8, 'Ohh same here', 1, '2021-12-07 11:11:08'),
+(38, 8, 10, 'lets go for party then', 1, '2021-12-07 11:11:30'),
+(39, 10, 8, 'Ya sure', 1, '2021-12-07 11:11:37'),
+(40, 8, 10, 'ok bye', 1, '2021-12-07 11:11:53');
 
 -- --------------------------------------------------------
 
@@ -187,14 +219,21 @@ CREATE TABLE `notifications` (
 INSERT INTO `notifications` (`id`, `to_user_id`, `message`, `created_at`, `from_user_id`, `read_status`, `post_id`) VALUES
 (82, 10, 'Unblocked you !', '2021-12-06 08:16:11', 8, 1, '0'),
 (83, 8, 'started following you !', '2021-12-06 08:16:59', 10, 1, '0'),
-(84, 8, 'liked your post !', '2021-12-06 08:17:33', 10, 2, '12'),
-(85, 8, 'commented on your post', '2021-12-06 08:17:41', 10, 2, '12'),
+(84, 8, 'liked your post !', '2021-12-06 08:17:33', 10, 1, '12'),
+(85, 8, 'commented on your post', '2021-12-06 08:17:41', 10, 1, '12'),
 (86, 8, 'commented on your post', '2021-12-06 08:19:07', 10, 1, '5'),
 (87, 10, 'blocked you', '2021-12-06 08:20:42', 8, 1, '0'),
 (88, 10, 'Unblocked you !', '2021-12-06 08:21:09', 8, 1, '0'),
 (89, 8, 'started following you !', '2021-12-06 08:21:34', 10, 1, '0'),
 (90, 10, 'started following you !', '2021-12-06 08:22:17', 8, 1, '0'),
-(91, 3, 'Unfollowed you !', '2021-12-06 08:26:01', 8, 0, '0');
+(91, 3, 'Unfollowed you !', '2021-12-06 08:26:01', 8, 0, '0'),
+(92, 8, 'commented on your post', '2021-12-07 10:24:33', 11, 2, '6'),
+(93, 11, 'blocked you', '2021-12-07 10:48:28', 8, 1, '0'),
+(94, 11, 'Unblocked you !', '2021-12-07 11:04:05', 8, 1, '0'),
+(95, 8, 'blocked you', '2021-12-07 11:08:54', 11, 1, '0'),
+(96, 8, 'Unblocked you !', '2021-12-07 11:09:03', 11, 1, '0'),
+(97, 8, 'blocked you', '2021-12-07 11:12:50', 10, 1, '0'),
+(98, 8, 'Unblocked you !', '2021-12-07 11:13:04', 10, 1, '0');
 
 -- --------------------------------------------------------
 
@@ -219,7 +258,6 @@ INSERT INTO `posts` (`id`, `user_id`, `post_img`, `post_text`, `created_at`) VAL
 (2, 8, '1638040069IMG_20210215_074954_1.jpg', '', '2021-11-27 19:07:49'),
 (3, 6, '1638040508Screenshot (3).png', 'my fisrt web app', '2021-11-27 19:15:08'),
 (5, 8, '1638040774post2.jpg', 'say hii to everyone', '2021-11-27 19:19:34'),
-(6, 8, '1638239255vlcsnap-2021-10-14-20h23m35s993.png', '', '2021-11-30 02:27:35'),
 (7, 6, '1638243863vlcsnap-2021-10-05-20h25m29s906.png', '', '2021-11-30 03:44:23'),
 (9, 10, '1638469199post4.jpg', '', '2021-12-02 18:19:59');
 
@@ -287,6 +325,12 @@ ALTER TABLE `likes`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `messages`
+--
+ALTER TABLE `messages`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `notifications`
 --
 ALTER TABLE `notifications`
@@ -312,13 +356,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `block_list`
 --
 ALTER TABLE `block_list`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT for table `follow_list`
@@ -333,16 +377,22 @@ ALTER TABLE `likes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=91;
 
 --
+-- AUTO_INCREMENT for table `messages`
+--
+ALTER TABLE `messages`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+
+--
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=92;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=99;
 
 --
 -- AUTO_INCREMENT for table `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `users`
